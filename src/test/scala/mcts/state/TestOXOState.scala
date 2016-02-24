@@ -61,4 +61,63 @@ class TestOXOState extends FunSuite{
         assert(expected.equals(actual), s"expected=\n${expected}; actual=\n${actual}")
     }
 
+    test("The result of a player-winning board should be player1=1.0, player2=0.0.") {
+        val state : OXOState = new OXOState
+        state.board = Array(
+            1, 1, 1,
+            2, 2, 1,
+            1, 2, 1
+        )
+        state.lastPlayerWhoMoved = 1
+        val actual1 : Double = state.getResult(1)
+        val actual2 : Double = state.getResult(2)
+
+        var expected1 = 1.0
+        var expected2 = 0.0
+
+        assert(actual1 == expected1, s"expected result of player1 to be $expected1, but was $actual1")
+        assert(actual2 == expected2, s"expected result of player1 to be $expected2, but was $actual2")
+
+    }
+
+    test("The result of a cpu-winning board should be player1=0.0, player2=1.0.") {
+        val state : OXOState = new OXOState
+        state.board = Array(
+            2, 1, 2,
+            2, 2, 1,
+            2, 1, 1
+        )
+        state.lastPlayerWhoMoved = 2
+
+        val actual1 : Double = state.getResult(1)
+        val actual2 : Double = state.getResult(2)
+
+        var expected1 = 0.0
+        var expected2 = 1.0
+
+        assert(actual1 == expected1, s"expected result of player1 to be $expected1, but was $actual1")
+        assert(actual2 == expected2, s"expected result of player1 to be $expected2, but was $actual2")
+
+    }
+
+    test("The result of a drawn board should be player1=0.5, player2=0.5.") {
+        val state : OXOState = new OXOState
+        state.board = Array(
+            2, 1, 2,
+            1, 2, 1,
+            1, 2, 1
+        )
+        state.lastPlayerWhoMoved = 2
+
+        val actual1 : Double = state.getResult(1)
+        val actual2 : Double = state.getResult(2)
+
+        var expected1 = 0.5
+        var expected2 = 0.5
+
+        assert(actual1 == expected1, s"expected result of player1 to be $expected1, but was $actual1")
+        assert(actual2 == expected2, s"expected result of player1 to be $expected2, but was $actual2")
+
+    }
+
 }

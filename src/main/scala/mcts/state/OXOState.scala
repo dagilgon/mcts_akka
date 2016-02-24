@@ -45,11 +45,9 @@ class OXOState extends GameState {
     }
 
     override def getAvailableActions: Set[Int] = {
-        var availableIndices : Set[Int] = Set.empty;
+        var availableIndices = board.zipWithIndex.filter( x => x._1 == 0)
 
-        availableIndices = Set.empty ++ (board.filter( _ == 0))
-
-        return Set(0,1,2,3,4,5,6,7,8)
+        return Set.empty ++ availableIndices.map( x => x._2 )
     }
 
     /**
@@ -69,23 +67,26 @@ class OXOState extends GameState {
             (0,4,8),(2,4,6)             // diagonals
         )
 
-        var winningPlayer = winConfigurations.filter( x => (board(x._1) == board(x._2) && board(x._2) == board(x._3))).map( x => board(x._1))
+        val winningPlayers  = winConfigurations .filter( x => (board(x._1) == board(x._2) && board(x._2) == board(x._3)))
+                                                .map( x => board(x._1))
 
-
-        if (winningPlayer.nonEmpty) {
-            if (winningPlayer.head == playerIndex) {
+        if (winningPlayers.nonEmpty) {
+            if (winningPlayers.head == playerIndex) {
                 return 1.0
             }
             else {
                 return 0.0
             }
         }
-
-        if (getAvailableActions.isEmpty) {
-            return 0.5 // draw
-        }
         else {
-            return 0.0
+            if (getAvailableActions.isEmpty) {
+                return 0.5 // draw
+            }
+            else {
+                return 0.0
+            }
         }
+
+
     }
 }
