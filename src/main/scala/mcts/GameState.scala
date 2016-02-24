@@ -5,10 +5,11 @@ package mcts
   */
 trait GameState {
 
-    def getLastPlayerWhoMoved : Int;
-    def getAvailableActions : Set[Int]
-    def getResult(playerIndex : Int)
-    def doAction(action : Int)
+    def getCopy                         : GameState
+    def getLastPlayerWhoMoved           : Int
+    def getAvailableActions             : Set[Int]
+    def getResult(playerIndex : Int)    : Double
+    def doAction(action : Int)          : Unit
 
 }
 
