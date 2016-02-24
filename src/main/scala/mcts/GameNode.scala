@@ -5,7 +5,8 @@ import scala.collection.mutable.ListBuffer
 /**
   * Created by culim on 2/24/16.
   */
-class GameNode(action : Int, parent : GameNode = null, state : GameState = null) {
+case class GameNode(action : Int = -1, parent : GameNode = null, state : GameState = null) {
+
     var numberOfWins : Int = 0
     var numberOfVisits : Int = 0
     var children : ListBuffer[GameNode] = ListBuffer.empty
