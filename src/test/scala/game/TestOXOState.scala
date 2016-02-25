@@ -1,7 +1,6 @@
 package game
 
-import game.OXOState
-import org.scalatest.{FunSuite, FunSpec}
+import org.scalatest.FunSuite
 
 /**
   * Created by culim on 2/24/16.
