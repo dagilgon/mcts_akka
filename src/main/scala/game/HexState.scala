@@ -43,7 +43,7 @@ case class HexState(var nRows : Int, var nColumns : Int) extends GameState{
             }
 
             s += row.toString
-            s += " "
+            s += "  "
 
             for (buffer <- 1 to row) {
                 s += " "
