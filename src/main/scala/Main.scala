@@ -1,4 +1,4 @@
-import game.OXOState
+import game.{HexState, OXOState}
 import mcts.UCT
 
 /**
@@ -6,7 +6,7 @@ import mcts.UCT
   */
 object Main extends App{
 
-    var state = new OXOState
+    var state = new HexState(7, 7)
     while (state.getAvailableActions.nonEmpty) {
 
         println(s"Player ${state.totalNumberOfPlayers+1 - state.getLastPlayerWhoMoved}'s turn.")

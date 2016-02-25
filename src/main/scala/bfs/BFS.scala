@@ -21,7 +21,6 @@ object BFS {
 
             if (Current.equals(end)) {
 
-                println("Found path")
                 var next : BFSNode = Current
                 var path : ListBuffer[BFSNode] = ListBuffer.empty
                 while (next != null) {

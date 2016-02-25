@@ -67,7 +67,58 @@ case class HexState(var nRows : Int, var nColumns : Int) extends GameState{
         val s : HexState = new HexState(nRows, nColumns)
         s.lastPlayerWhoMoved = lastPlayerWhoMoved
         s.totalNumberOfPlayers = totalNumberOfPlayers
+        s.board = board.clone()
+        s.nodeMap = nodeMap
+        s.allEdges = allEdges
+        s.allNodes = allNodes
+
         return s
+    }
+
+    def buildGraph = {
+        nodeMap = Map.empty
+        allNodes = Set.empty
+        for (row <- 0 to nRows-1) {
+            for (col <- 0 to nColumns-1) {
+                var node = new BFSNode(row * nColumns + col)
+                allNodes += node
+                nodeMap(row * nColumns + col) = node
+            }
+        }
+        allEdges  = Set.empty
+        for (row <- 0 to nRows-1) {
+            for (col <- 0 to nColumns-1) {
+
+                //  0  1  2  3
+                //    4  5  6  7
+                //      8  9  10 11
+
+                for ((dy, dx) <- List(
+                    (1, 0),     // right
+                    (-1, 0),    // left
+                    (0, -1),    // up
+                    (0, 1),     // down
+                    (-1, -1),   // top-left
+                    (+1, -1),   // top-right
+                    (-1, +1),   // bottom-left
+                    (+1, -1)    // bottom-left
+                )) {
+
+                    val currentNode = nodeMap(row * nColumns + col)
+
+                    val neighborCol = col + dx
+                    val neighborRow = row + dy
+
+                    if (neighborRow >= 0 && neighborRow < nRows && neighborCol >= 0 && neighborCol < nColumns) {
+                        val neighborIndex : Int = neighborRow * nColumns + neighborCol
+                        val neighborNode : BFSNode = nodeMap(neighborIndex)
+                        allEdges += Tuple2(currentNode, neighborNode)
+                        allEdges += Tuple2(neighborNode, currentNode)
+                    }
+                }
+
+            }
+        }
     }
 
     override def getAvailableActions: Set[Int] = {
@@ -90,7 +141,26 @@ case class HexState(var nRows : Int, var nColumns : Int) extends GameState{
         return lastPlayerWhoMoved
     }
 
-    override def getResult(playerIndex: Int): Double = ???
+    override def getResult(playerIndex: Int): Double = {
+        var winner : Int = getPlayerInWinConditions
+        if (winner > 0) {
+            // winner found
+            if (winner == lastPlayerWhoMoved) {
+                return 1.0
+            }
+            else {
+                return 0.0
+            }
+        }
+        else {
+            if (getAvailableActions.isEmpty) {
+                return 0.5
+            }
+            else {
+                return 0.0
+            }
+        }
+    }
 
     def getPlayerInWinConditions: Int = {
 
@@ -112,7 +182,7 @@ case class HexState(var nRows : Int, var nColumns : Int) extends GameState{
 
             for (startIndex <- leftIndices) {
                 for (endIndex <- rightIndices) {
-                    println(s"Checking P1 for start=$startIndex end=$endIndex")
+//                    println(s"Checking P1 for start=$startIndex end=$endIndex")
                     val path : Array[BFSNode] = BFS.search(filteredNodes, filteredEdges, nodeMap(startIndex), nodeMap(endIndex))
                     if (path.nonEmpty) {
                         return 1 // player 1
@@ -140,7 +210,7 @@ case class HexState(var nRows : Int, var nColumns : Int) extends GameState{
 
             for (startIndex <- topIndices) {
                 for (endIndex <- bottomIndices) {
-                    println(s"Checking P2 for start=$startIndex end=$endIndex")
+//                    println(s"Checking P2 for start=$startIndex end=$endIndex")
                     val path : Array[BFSNode] = BFS.search(filteredNodes, filteredEdges, nodeMap(startIndex), nodeMap(endIndex))
                     if (path.nonEmpty) {
                         return 2 // player 2
