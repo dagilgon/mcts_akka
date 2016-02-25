@@ -11,6 +11,7 @@ class TestHexState extends FunSuite{
         var nRows : Int = 11;
         var nColumns : Int = 11;
         val state : HexState = new HexState(nRows, nColumns)
+        println(state.toString)
         assert(state.board.length == nRows * nColumns)
     }
 
