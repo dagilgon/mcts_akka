@@ -75,7 +75,7 @@ class TestHexState extends FunSuite{
         )
         state.lastPlayerWhoMoved = 1
 
-        var actual : Int = state.getPlayerInWinConditions
+        var actual : Int = state.getPlayerInWinConditions._1
         var expected : Int = 1
 
         assert(expected == actual)
@@ -95,10 +95,39 @@ class TestHexState extends FunSuite{
         )
         state.lastPlayerWhoMoved = 2
 
-        var actual : Int = state.getPlayerInWinConditions
+        var actual : Int = state.getPlayerInWinConditions._1
         var expected : Int = 2
 
         assert(expected == actual)
+    }
+
+    test("P2 in making final move on 7x7 board should not result in a win.") {
+        var nRows : Int = 7;
+        var nColumns : Int = 7;
+        var state : HexState = new HexState(nRows, nColumns)
+
+        state.board = Array(
+            1, 1, 1, 1, 2, 2, 1,
+             1, 1, 0, 2, 0, 0, 1,
+              1, 2, 2, 1, 0, 0, 0,
+               2, 1, 2, 1, 0, 0, 0,
+                2, 2, 1, 2, 1, 2, 0,
+                 2, 1, 1, 1, 0, 2, 2,
+                  1, 1, 0, 2, 1, 2, 2
+        )
+        state.lastPlayerWhoMoved = 1
+
+        var pair = state.getPlayerInWinConditions
+        assert(pair._1 == 0)
+
+        state.doAction(39)
+
+        pair = state.getPlayerInWinConditions
+
+        println(state)
+        println(pair._2.mkString(","))
+        assert(pair._1 == 0)
+
     }
 
 }

@@ -21,47 +21,9 @@ case class HexState(var nRows : Int, var nColumns : Int) extends GameState{
 
     var nodeMap : Map[Int, BFSNode] = Map.empty
     var allNodes : Set[BFSNode] = Set.empty
-    for (row <- 0 to nRows-1) {
-        for (col <- 0 to nColumns-1) {
-            var node = new BFSNode(row * nColumns + col)
-            allNodes += node
-            nodeMap(row * nColumns + col) = node
-        }
-    }
     var allEdges : Set[Tuple2[BFSNode, BFSNode]] = Set.empty
-    for (row <- 0 to nRows-1) {
-        for (col <- 0 to nColumns-1) {
 
-            //  0  1  2  3
-            //    4  5  6  7
-            //      8  9  10 11
-
-            for ((dy, dx) <- List(
-                (1, 0),     // right
-                (-1, 0),    // left
-                (0, -1),    // up
-                (0, 1),     // down
-                (-1, -1),   // top-left
-                (+1, -1),   // top-right
-                (-1, +1),   // bottom-left
-                (+1, -1)    // bottom-left
-            )) {
-
-                val currentNode = nodeMap(row * nColumns + col)
-
-                val neighborCol = col + dx
-                val neighborRow = row + dy
-
-                if (neighborRow >= 0 && neighborRow < nRows && neighborCol >= 0 && neighborCol < nColumns) {
-                    val neighborIndex : Int = neighborRow * nColumns + neighborCol
-                    val neighborNode : BFSNode = nodeMap(neighborIndex)
-                    allEdges += Tuple2(currentNode, neighborNode)
-                    allEdges += Tuple2(neighborNode, currentNode)
-                }
-            }
-
-        }
-    }
+    buildGraph
 
     override def getCopy: GameState = {
         val s : HexState = new HexState(nRows, nColumns)
@@ -89,19 +51,17 @@ case class HexState(var nRows : Int, var nColumns : Int) extends GameState{
         for (row <- 0 to nRows-1) {
             for (col <- 0 to nColumns-1) {
 
-                //  0  1  2  3
-                //    4  5  6  7
-                //      8  9  10 11
+                //  0  1  2  3        |   (0,0) (0,1) (0,2), (0,3)
+                //    4  5  6  7      |      (1,0) (1,1) (1,2) (1,3)
+                //      8  9  10 11   |         (2,0) (2,1), (2,2) (2,3)
 
                 for ((dy, dx) <- List(
-                    (1, 0),     // right
-                    (-1, 0),    // left
-                    (0, -1),    // up
-                    (0, 1),     // down
-                    (-1, -1),   // top-left
-                    (+1, -1),   // top-right
-                    (-1, +1),   // bottom-left
-                    (+1, -1)    // bottom-left
+                    (-1, 0),    // up-left
+                    (-1, +1),   // up-right
+                    (0, -1),    // left
+                    (0, 1),     // right
+                    (+1, -1),   // down-left
+                    (+1, 0)     // down-right
                 )) {
 
                     val currentNode = nodeMap(row * nColumns + col)
@@ -123,8 +83,8 @@ case class HexState(var nRows : Int, var nColumns : Int) extends GameState{
 
     override def getAvailableActions: Set[Int] = {
         var availableIndices = board.zipWithIndex.filter( x => x._1 == 0)
-
-        if (getPlayerInWinConditions > 0) {
+        val (winner, path) = getPlayerInWinConditions
+        if (winner > 0) {
             // Someone has already won, no more actions permitted.
             return Set.empty;
         }
@@ -142,7 +102,7 @@ case class HexState(var nRows : Int, var nColumns : Int) extends GameState{
     }
 
     override def getResult(playerIndex: Int): Double = {
-        var winner : Int = getPlayerInWinConditions
+        val (winner, path) = getPlayerInWinConditions
         if (winner > 0) {
             // winner found
             if (winner == lastPlayerWhoMoved) {
@@ -162,7 +122,7 @@ case class HexState(var nRows : Int, var nColumns : Int) extends GameState{
         }
     }
 
-    def getPlayerInWinConditions: Int = {
+    def getPlayerInWinConditions: Tuple2[Int, Array[Int]] = {
 
         // player 1 goes horizontal (left edge to right edge)
         var leftIndices : ListBuffer[Int] = ListBuffer.empty
@@ -185,7 +145,7 @@ case class HexState(var nRows : Int, var nColumns : Int) extends GameState{
 //                    println(s"Checking P1 for start=$startIndex end=$endIndex")
                     val path : Array[BFSNode] = BFS.search(filteredNodes, filteredEdges, nodeMap(startIndex), nodeMap(endIndex))
                     if (path.nonEmpty) {
-                        return 1 // player 1
+                        return (1, path.map(x => x.id)) // player 1
                     }
                 }
             }
@@ -213,12 +173,12 @@ case class HexState(var nRows : Int, var nColumns : Int) extends GameState{
 //                    println(s"Checking P2 for start=$startIndex end=$endIndex")
                     val path : Array[BFSNode] = BFS.search(filteredNodes, filteredEdges, nodeMap(startIndex), nodeMap(endIndex))
                     if (path.nonEmpty) {
-                        return 2 // player 2
+                        return (2, path.map(x => x.id)) // player 2
                     }
                 }
             }
         }
-        return 0;
+        return (0, Array.empty);
     }
 
     override def toString : String = {
@@ -227,6 +187,8 @@ case class HexState(var nRows : Int, var nColumns : Int) extends GameState{
         for (row <- 0 to nRows.toString.length) {
             s += " "
         }
+
+        var (winner, path) = getPlayerInWinConditions
 
         // -- print the headers (top)
         for (col <- 0 to nColumns-1) {
@@ -251,7 +213,12 @@ case class HexState(var nRows : Int, var nColumns : Int) extends GameState{
                 s += " "
             }
             for (col <- 0 to nColumns-1) {
-                s += ".12"(board(row*nColumns+col))
+                if (path.nonEmpty && board(row*nColumns+col) == winner && path.contains(row*nColumns+col)) {
+                    s += "*"
+                }
+                else {
+                    s += ".12"(board(row*nColumns+col))
+                }
                 if (col < nColumns-1) {
                     s += " "
                 }
