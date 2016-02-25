@@ -1,4 +1,4 @@
-package mcts.state
+package game
 
 import mcts.GameState
 
@@ -51,7 +51,7 @@ class OXOState extends GameState {
             // Someone has already won, no more actions permitted.
             return Set.empty;
         }
-        
+
         return Set.empty ++ availableIndices.map( x => x._2 )
     }
 

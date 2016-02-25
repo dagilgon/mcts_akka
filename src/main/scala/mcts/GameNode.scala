@@ -36,7 +36,7 @@ case class GameNode(action : Int = -1, parent : GameNode = null, state : GameSta
     }
 
     override def toString() : String = {
-        return s"[Action: $action; " +
+        return  s"[A: $action; " +
                 s"W/V: ${numberOfWins}/${numberOfVisits} = ${numberOfWins.toDouble/numberOfVisits}; " +
                 s"U: ${untriedActions}"
     }

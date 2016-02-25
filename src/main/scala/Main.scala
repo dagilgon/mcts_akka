@@ -1,13 +1,11 @@
-package mcts
-
-import mcts.state.OXOState
+import game.OXOState
+import mcts.UCT
 
 /**
   * Created by culim on 2/24/16.
   */
 object Main extends App{
 
-    println("Hello, world!")
     var state = new OXOState
     while (state.getAvailableActions.nonEmpty) {
 

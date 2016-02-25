@@ -1,5 +1,6 @@
-package mcts.state
+package game
 
+import game.OXOState
 import org.scalatest.{FunSuite, FunSpec}
 
 /**
