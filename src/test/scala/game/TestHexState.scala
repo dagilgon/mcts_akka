@@ -41,7 +41,7 @@ class TestHexState extends FunSuite{
         assert(state.board(1) == 2, "Player 2 should be in position (a,0)")
     }
 
-    test("A 5 x 5 board where P1 and P2 alternate across 5 turns should reduce #available_actions") {
+    test("P1 and P2 alternate across 5 turns should reduce #available_actions.") {
         var nRows : Int = 5;
         var nColumns : Int = 5;
         val state : HexState = new HexState(nRows, nColumns)
@@ -59,8 +59,46 @@ class TestHexState extends FunSuite{
 
         assert(state.getAvailableActions.size == nRows*nColumns - nTurns*state.totalNumberOfPlayers)
 
+    }
 
+    test("P1 in winning configuration has won should be detected.") {
+        var nRows : Int = 5;
+        var nColumns : Int = 5;
+        var state : HexState = new HexState(nRows, nColumns)
 
+        state.board = Array(
+            1, 0, 0, 0, 0,
+             0, 1, 0, 0, 0,
+              0, 0, 1, 1, 0,
+               0, 0, 1, 0, 1,
+                0, 0, 2, 2, 2
+        )
+        state.lastPlayerWhoMoved = 1
+
+        var actual : Int = state.getPlayerInWinConditions
+        var expected : Int = 1
+
+        assert(expected == actual)
+    }
+
+    test("P2 in winning configuration has won should be detected.") {
+        var nRows : Int = 5;
+        var nColumns : Int = 5;
+        var state : HexState = new HexState(nRows, nColumns)
+
+        state.board = Array(
+            1, 0, 2, 0, 2,
+             0, 2, 1, 2, 0,
+              0, 0, 2, 1, 0,
+               0, 2, 1, 0, 0,
+                2, 1, 1, 1, 0
+        )
+        state.lastPlayerWhoMoved = 2
+
+        var actual : Int = state.getPlayerInWinConditions
+        var expected : Int = 2
+
+        assert(expected == actual)
     }
 
 }
