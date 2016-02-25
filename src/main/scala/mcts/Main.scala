@@ -5,25 +5,27 @@ import mcts.state.OXOState
 /**
   * Created by culim on 2/24/16.
   */
-object MCTS extends App{
+object Main extends App{
 
     println("Hello, world!")
     var state = new OXOState
     while (state.getAvailableActions.nonEmpty) {
-        
+
         println(s"Player ${state.totalNumberOfPlayers+1 - state.getLastPlayerWhoMoved}'s turn.")
         println(state.toString)
 
         var action : Int = -1;
         if (state.getLastPlayerWhoMoved == 1) {
+            // Now it is player 2's turn.
             action = UCT.search(state, 100, false)
         }
         else {
-            action = UCT.search(state, 1, false)
+            // Now it is player 1's turn.
+            action = UCT.search(state, 100, true)
         }
 
         println(s"Player ${state.totalNumberOfPlayers+1 - state.getLastPlayerWhoMoved}'s best action is ${action}")
-
+        println()
         state.doAction(action)
 
     }

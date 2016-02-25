@@ -47,6 +47,11 @@ class OXOState extends GameState {
     override def getAvailableActions: Set[Int] = {
         var availableIndices = board.zipWithIndex.filter( x => x._1 == 0)
 
+        if (getPlayerInWinConditions > 0) {
+            // Someone has already won, no more actions permitted.
+            return Set.empty;
+        }
+        
         return Set.empty ++ availableIndices.map( x => x._2 )
     }
 
@@ -61,17 +66,9 @@ class OXOState extends GameState {
     }
 
     override def getResult(playerIndex: Int): Double = {
-        var winConfigurations : Set[Tuple3[Int, Int, Int]] = Set(
-            (0,1,2),(3,4,5),(6,7,8),    // horizontals
-            (0,3,6),(1,4,7),(2,5,8),    // verticals
-            (0,4,8),(2,4,6)             // diagonals
-        )
-
-        val winningPlayers  = winConfigurations .filter( x => (board(x._1) == board(x._2) && board(x._2) == board(x._3)))
-                                                .map( x => board(x._1))
-
-        if (winningPlayers.nonEmpty) {
-            if (winningPlayers.head == playerIndex) {
+        var winningPlayer : Int = getPlayerInWinConditions;
+        if (winningPlayer > 0) {
+            if (winningPlayer == playerIndex) {
                 return 1.0
             }
             else {
@@ -79,14 +76,35 @@ class OXOState extends GameState {
             }
         }
         else {
+            // Nobody in win configuration
+
             if (getAvailableActions.isEmpty) {
-                return 0.5 // draw
+                // draw
+                return 0.5
             }
             else {
+                // draw
                 return 0.0
             }
         }
 
 
+    }
+
+    def getPlayerInWinConditions: Int = {
+        var winConfigurations : Set[Tuple3[Int, Int, Int]] = Set(
+            (0,1,2),(3,4,5),(6,7,8),    // horizontals
+            (0,3,6),(1,4,7),(2,5,8),    // verticals
+            (0,4,8),(2,4,6)             // diagonals
+        )
+
+        val winningPlayers  = winConfigurations .filter( x => (board(x._1) == board(x._2) && board(x._2) == board(x._3)))
+                .map( x => board(x._1))
+
+        if (winningPlayers.nonEmpty) {
+            return winningPlayers.head
+        }
+
+        return 0;
     }
 }
