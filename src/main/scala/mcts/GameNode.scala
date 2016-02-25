@@ -7,7 +7,7 @@ import scala.collection.mutable.ListBuffer
   */
 case class GameNode(action : Int = -1, parent : GameNode = null, state : GameState = null) {
 
-    var numberOfWins : Int = 0
+    var numberOfWins : Double = 0
     var numberOfVisits : Int = 0
     var children : ListBuffer[GameNode] = ListBuffer.empty
     var untriedActions : Set[Int] = state.getAvailableActions
@@ -22,7 +22,7 @@ case class GameNode(action : Int = -1, parent : GameNode = null, state : GameSta
         return sortedChildren.last._1
     }
 
-    def update(result : Int) : Unit = {
+    def update(result : Double) : Unit = {
         numberOfVisits += 1;
         numberOfWins += result;
     }
@@ -36,7 +36,7 @@ case class GameNode(action : Int = -1, parent : GameNode = null, state : GameSta
     }
 
     override def toString() : String = {
-        return s"[M: $action; " +
+        return s"[Action: $action; " +
                 s"W/V: ${numberOfWins}/${numberOfVisits} = ${numberOfWins.toDouble/numberOfVisits}; " +
                 s"U: ${untriedActions}"
     }
