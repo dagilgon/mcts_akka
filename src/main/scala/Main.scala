@@ -1,6 +1,8 @@
 import game.{HexState, OXOState}
 import mcts.UCT
 
+import scala.util.Random
+
 /**
   * Created by culim on 2/24/16.
   */
@@ -15,11 +17,11 @@ object Main extends App{
         var action : Int = -1;
         if (state.getLastPlayerWhoMoved == 1) {
             // Now it is player 2's turn.
-            action = UCT.search(state, 100, false)
+            action = UCT.search(state, 200, false)
         }
         else {
             // Now it is player 1's turn.
-            action = UCT.search(state, 100, true)
+            action = state.getAvailableActions.toList(Random.nextInt(state.getAvailableActions.size))
         }
 
         println(s"Player ${state.totalNumberOfPlayers+1 - state.getLastPlayerWhoMoved}'s best action is ${action}")

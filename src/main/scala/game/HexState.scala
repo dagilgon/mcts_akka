@@ -105,11 +105,11 @@ case class HexState(var nRows : Int, var nColumns : Int) extends GameState{
         val (winner, path) = getPlayerInWinConditions
         if (winner > 0) {
             // winner found
-            if (winner == lastPlayerWhoMoved) {
+            if (winner == playerIndex) {
                 return 1.0
             }
             else {
-                return 0.0
+                return -1.0
             }
         }
         else {
