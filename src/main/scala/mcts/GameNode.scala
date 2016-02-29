@@ -12,11 +12,12 @@ case class GameNode(action : Int = -1, parent : GameNode = null, state : GameSta
     var children : ListBuffer[GameNode] = ListBuffer.empty
     var untriedActions : Set[Int] = state.getAvailableActions
     var playerIndex : Int = state.getLastPlayerWhoMoved
+    val epsilon : Double = 1e-6
 
     def selectChild : GameNode = {
         val sortedChildren = children.map( node => (node,
-            node.numberOfWins.toDouble/node.numberOfVisits +
-                Math.sqrt(2 * Math.log(numberOfVisits) / node.numberOfVisits)
+            (node.numberOfWins.toDouble/node.numberOfVisits) +
+                Math.sqrt(2 * Math.log(numberOfVisits+1) / (node.numberOfVisits+epsilon))
         )).sortBy(_._2)
 
         return sortedChildren.last._1
