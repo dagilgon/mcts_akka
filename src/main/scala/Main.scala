@@ -21,7 +21,8 @@ object Main extends App{
         }
         else {
             // Now it is player 1's turn.
-            action = state.getAvailableActions.toList(Random.nextInt(state.getAvailableActions.size))
+//            action = state.getAvailableActions.toList(Random.nextInt(state.getAvailableActions.size))
+            action = UCT.search(state, 200, false)
         }
 
         println(s"Player ${state.totalNumberOfPlayers+1 - state.getLastPlayerWhoMoved}'s best action is ${action}")
