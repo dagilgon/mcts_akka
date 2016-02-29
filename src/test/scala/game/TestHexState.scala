@@ -68,9 +68,9 @@ class TestHexState extends FunSuite{
 
         state.board = Array(
             1, 0, 0, 0, 0,
-             0, 1, 0, 0, 0,
-              0, 0, 1, 1, 0,
-               0, 0, 1, 0, 1,
+             0, 1, 1, 0, 0,
+              0, 0, 1, 0, 0,
+               0, 0, 1, 1, 1,
                 0, 0, 2, 2, 2
         )
         state.lastPlayerWhoMoved = 1
