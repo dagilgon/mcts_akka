@@ -67,7 +67,7 @@ class TestHexState extends FunSuite{
         var state : HexState = new HexState(nRows, nColumns)
 
         state.board = Array(
-            1, 0, 0, 0, 0,
+            1, 1, 0, 0, 0,
              0, 1, 1, 0, 0,
               0, 0, 1, 0, 0,
                0, 0, 1, 1, 1,
