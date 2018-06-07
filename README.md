@@ -5,11 +5,10 @@ Akka version of Monte-Carlo tree search implementacion from https://github.com/c
 # How to
 Edit Main to choose Hex(7x7) or TicTacToe
     
-    var state = new HexState(7, 7)
-or    
+    // comment one
+    var state = new HexState(7, 7)    
     var state = new OXOState()
-
-
+    
 Execute Main via IDE or SBT -> sbt run
 
 # References
