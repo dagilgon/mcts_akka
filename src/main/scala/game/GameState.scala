@@ -1,4 +1,4 @@
-package mcts
+package game
 
 /**
   * Created by culim on 2/24/16.

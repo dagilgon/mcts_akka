@@ -1,10 +1,9 @@
 package game
 
 import bfs.{BFS, BFSNode}
-import mcts.GameState
 
 import scala.collection.mutable
-import scala.collection.mutable.{ListBuffer,Map}
+import scala.collection.mutable.{ListBuffer, Map}
 
 /**
   * Created by culim on 2/24/16.

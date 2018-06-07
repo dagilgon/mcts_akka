@@ -1,5 +1,6 @@
 import game.{HexState, OXOState}
-import mcts.UCT
+import mcts_distributed.UCT
+//import mcts.UCT
 
 import scala.util.Random
 
@@ -9,6 +10,7 @@ import scala.util.Random
 object Main extends App{
 
     var state = new HexState(7, 7)
+    //var state = new OXOState()
     while (state.getAvailableActions.nonEmpty) {
 
         println(s"Player ${state.totalNumberOfPlayers+1 - state.getLastPlayerWhoMoved}'s turn.")

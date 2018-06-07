@@ -1,5 +1,7 @@
 package mcts
 
+import game.GameState
+
 import scala.util.Random
 
 /**
